@@ -32,11 +32,15 @@
             padding: 5px;
             margin-top: 5px;
         }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
+        .button-group {
+            display: flex;
+            justify-content: space-between;
             margin-top: 10px;
+        }
+        button {
+            flex: 1;
+            padding: 10px;
+            margin: 0 5px;
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -46,12 +50,25 @@
         button:hover {
             background-color: #45a049;
         }
+        #resetBtn {
+            background-color: #f44336;
+        }
+        #resetBtn:hover {
+            background-color: #d32f2f;
+        }
+        #copyBtn {
+            background-color: #2196F3;
+        }
+        #copyBtn:hover {
+            background-color: #1E88E5;
+        }
         #result {
             margin-top: 20px;
             padding: 10px;
             background-color: #e7f3fe;
             border: 1px solid #b6d4fe;
             border-radius: 3px;
+            display: none;
         }
     </style>
 </head>
@@ -62,8 +79,12 @@
         <input type="text" id="key" placeholder="Enter your private key">
         <label for="input">Input:</label>
         <textarea id="input" rows="5" placeholder="Enter text to encrypt or decrypt"></textarea>
-        <button onclick="encrypt()">Encrypt</button>
-        <button onclick="decrypt()">Decrypt</button>
+        <div class="button-group">
+            <button onclick="encrypt()">Encrypt</button>
+            <button onclick="decrypt()">Decrypt</button>
+            <button id="copyBtn" onclick="copyResult()">Copy Result</button>
+            <button id="resetBtn" onclick="resetInput()">Reset Input</button>
+        </div>
         <div id="result"></div>
     </div>
 
@@ -79,7 +100,7 @@
 
             try {
                 const encrypted = CryptoJS.AES.encrypt(input, key).toString();
-                document.getElementById('result').innerHTML = `<strong>Encrypted:</strong> ${encrypted}`;
+                showResult(`Encrypted: ${encrypted}`);
             } catch (error) {
                 alert('Encryption failed. Please check your input and try again.');
             }
@@ -97,7 +118,7 @@
             try {
                 const decrypted = CryptoJS.AES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
                 if (decrypted) {
-                    document.getElementById('result').innerHTML = `<strong>Decrypted:</strong> ${decrypted}`;
+                    showResult(`Decrypted: ${decrypted}`);
                 } else {
                     throw new Error('Decryption failed');
                 }
@@ -105,6 +126,33 @@
                 alert('Decryption failed. Please check your input and private key, and try again.');
             }
         }
+
+        function showResult(content) {
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `<strong>${content.split(':')[0]}:</strong> ${content.split(':')[1]}`;
+            resultElement.style.display = 'block';
+        }
+
+        function copyResult() {
+            const resultElement = document.getElementById('result');
+            if (resultElement.style.display !== 'none') {
+                const resultText = resultElement.textContent.split(':')[1].trim();
+                navigator.clipboard.writeText(resultText).then(() => {
+                    alert('Result copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            } else {
+                alert('No result to copy.');
+            }
+        }
+
+        function resetInput() {
+            document.getElementById('key').value = '';
+            document.getElementById('input').value = '';
+            document.getElementById('result').style.display = 'none';
+        }
     </script>
 </body>
 </html>
+
