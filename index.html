@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES Encryption/Decryption</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border: 1px solid #b6d4fe;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AES Encryption/Decryption</h1>
+        <label for="key">Private Key:</label>
+        <input type="text" id="key" placeholder="Enter your private key">
+        <label for="input">Input:</label>
+        <textarea id="input" rows="5" placeholder="Enter text to encrypt or decrypt"></textarea>
+        <button onclick="encrypt()">Encrypt</button>
+        <button onclick="decrypt()">Decrypt</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function encrypt() {
+            const key = document.getElementById('key').value;
+            const input = document.getElementById('input').value;
+            
+            if (!key || !input) {
+                alert('Please enter both a private key and input text.');
+                return;
+            }
+
+            try {
+                const encrypted = CryptoJS.AES.encrypt(input, key).toString();
+                document.getElementById('result').innerHTML = `<strong>Encrypted:</strong> ${encrypted}`;
+            } catch (error) {
+                alert('Encryption failed. Please check your input and try again.');
+            }
+        }
+
+        function decrypt() {
+            const key = document.getElementById('key').value;
+            const input = document.getElementById('input').value;
+            
+            if (!key || !input) {
+                alert('Please enter both a private key and input text.');
+                return;
+            }
+
+            try {
+                const decrypted = CryptoJS.AES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
+                if (decrypted) {
+                    document.getElementById('result').innerHTML = `<strong>Decrypted:</strong> ${decrypted}`;
+                } else {
+                    throw new Error('Decryption failed');
+                }
+            } catch (error) {
+                alert('Decryption failed. Please check your input and private key, and try again.');
+            }
+        }
+    </script>
+</body>
+</html>
